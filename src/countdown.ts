@@ -4,7 +4,9 @@ export class Countdown {
 
     constructor(
         private count: number,
-        private onUpdate: (mmss: string) => void) {
+        private onUpdate: (mmss: string) => void,
+        private onZeroReached: () => void = () => {}
+    ) {
             this.setTimer();
     }
 
@@ -28,9 +30,12 @@ export class Countdown {
             if (this.count > 0) {
                 this.count--;
                 this.updateValue();
-            } else if (this.countdownUpdater != null) {
-                clearInterval(this.countdownUpdater);
-                this.countdownUpdater = null;
+            } else {
+                if (this.countdownUpdater != null) {
+                    clearInterval(this.countdownUpdater);
+                    this.countdownUpdater = null;
+                }
+                this.onZeroReached();
             }
         }, 1000);
 
