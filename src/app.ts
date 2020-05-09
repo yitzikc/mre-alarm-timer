@@ -28,15 +28,15 @@ export default class AlarmTimer {
 				this.timerContent.text.contents = this.timerValue();
 			} else {
 				clearInterval(this.countdownUpdater);
+				this.countdownUpdater = null;
 			}
 		}, 1000);
+		this.timerContent.text.contents = this.timerValue();
 	}
 	/**
 	 * Once the context is "started", initialize the app.
 	 */
 	private async started() {
-        this.setTimer();
-        
 		this.assets = new MRE.AssetContainer(this.context);
 		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
 		this.timerBody = MRE.Actor.Create(this.context, {
@@ -70,10 +70,13 @@ export default class AlarmTimer {
 			}
 		});
 
+		this.setTimer();
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
 			this.count += 60;
-			// FIXME: Restore the counter interval time if it has been cleared
+			if (this.countdownUpdater == null) {
+				this.setTimer();
+			}
 		});
 
     }
