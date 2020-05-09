@@ -7,16 +7,22 @@ import { getParameterLastValue } from './parameter_set_util'
  * The main class of this app. All the logic goes here.
  */
 export default class AlarmTimer {
+	private rootActor?: MRE.Actor = undefined;
 	private timerBody?: MRE.Actor = undefined;
 	private timerContent?: MRE.Actor = undefined;
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
+
+	private alarmSound?: MRE.Sound = undefined;
+
+	private activeMedia: any;
 
 	// Number of seconds to count initially
 	private readonly initialCount: number;
 
 	// Increment to the counter (in seconds) when clicked
 	private readonly increment: number;
+
 
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
@@ -29,10 +35,17 @@ export default class AlarmTimer {
 	 * Once the context is "started", initialize the app.
 	 */
 	private async started() {
+		this.rootActor = MRE.Actor.Create(this.context, {
+            actor: {
+                name: 'Root Actor',
+            }
+        });
+		
 		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
 		this.timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
+				parentId: this.rootActor.id,
 				appearance: { meshId: square.id },
 				transform: {
 					app: {
@@ -61,11 +74,19 @@ export default class AlarmTimer {
 			}
 		});
 
+		this.alarmSound = this.assets.createSound(
+			'alarmSound',
+			{ uri: `${this.baseUrl}/alarm.ogg` });
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
 				if (this.timerContent != undefined) {
 					this.timerContent.text.contents = value;
+				}
+			},
+			() => {
+				if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
+					this.rootActor.startSound(this.alarmSound.id, { volume: 0.5  });
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
