@@ -4,11 +4,10 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
  * The main class of this app. All the logic goes here.
  */
 export default class AlarmTimer {
-	//private text: MRE.Actor = null;
 	private timerBody: MRE.Actor = null;
 	private timerContent: MRE.Actor = null;
 	private assets: MRE.AssetContainer;
-	private count = 100;
+	private count = 60;
 	private countdownUpdater: NodeJS.Timeout;
 
 	constructor(private context: MRE.Context, private baseUrl: string) {
