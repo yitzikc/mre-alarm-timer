@@ -18,10 +18,13 @@ export default class AlarmTimer {
 	// Increment to the counter (in seconds) when clicked
 	private readonly increment: number;
 
+	private readonly alarmSoundUrl: string;
+
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.assets = new MRE.AssetContainer(this.context);
+		this.alarmSoundUrl = baseUrl + '/alarm.mp3'
 		this.context.onStarted(() => this.started());
 	}
 
@@ -61,11 +64,21 @@ export default class AlarmTimer {
 			}
 		});
 
+		const alarmSound = this.assets.createSound(
+			'alarm',
+			{ 'uri': this.alarmSoundUrl }
+		);
+
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
 				if (this.timerContent != undefined) {
 					this.timerContent.text.contents = value;
+				}
+			},
+			() => {
+				if (this.timerBody != undefined) {
+					this.timerBody.startSound(alarmSound.id, {});
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
