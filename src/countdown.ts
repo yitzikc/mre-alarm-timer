@@ -1,6 +1,6 @@
 export class Countdown {
 
-    private countdownUpdater: NodeJS.Timeout
+    private countdownUpdater: NodeJS.Timeout | null = null
 
     constructor(
         private count: number,
@@ -28,7 +28,7 @@ export class Countdown {
             if (this.count > 0) {
                 this.count--;
                 this.updateValue();
-            } else {
+            } else if (this.countdownUpdater != null) {
                 clearInterval(this.countdownUpdater);
                 this.countdownUpdater = null;
             }
