@@ -1,4 +1,4 @@
-# Alarm Timer for theMixed Reality Extension SDK
+# Alarm Timer for the Mixed Reality Extension SDK
 
 This is a countdown timer which you can embed into an AltspaceVR virtual world. It's written using the [Mixed Reality
 Extension SDK](https://github.com/Microsoft/mixed-reality-extension-sdk).
@@ -26,8 +26,6 @@ In AltspaceVR:
 * Click Basics group
 * Click on SDKApp
 * For the URL field, enter `ws://localhost:3901`. If you've configured a different hostname, use that instead.
-* Enter a session ID (This step will eventually be optional. For now, put in
-any random value)
 * Click Confirm
 * If the app doesn't seem to load, click on the gear icon next the MRE object
 in to the present objects list, and make sure "Is Playing" is checked.
