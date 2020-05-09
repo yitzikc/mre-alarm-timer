@@ -51,6 +51,7 @@ export default class AlarmTimer {
 				}
 			}
 		});
+		this.timerBody.setCollider(MRE.ColliderType.Box, true);
 
 		this.timerContent = MRE.Actor.Create(this.context, {
 			actor: {
@@ -68,6 +69,12 @@ export default class AlarmTimer {
 					}
 				}
 			}
+		});
+
+		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
+		buttonBehavior.onClick(() => {
+			this.count += 60;
+			// FIXME: Restore the counter interval time if it has been cleared
 		});
 
     }
