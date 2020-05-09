@@ -11,9 +11,10 @@ Node.js 14.1 with Typescript support.
 
 * Clone the repository and
 * Change to the top-level directory of the repository.
-* If necessary create a _.env_ file to define your desired hostname
+* If you want to access the MRE by a hostname other than _localhost_,
+create a _.env_ file to define your desired hostname (see _.env.example_).
 * `npm install` This will install all dependent packages. (and will do very
-little if there are no changes)
+little if there are no changes).
 * `npm run build` This should not report any errors.
 * `npm start` This should print "INF: Multi-peer Adapter listening on..."
 
@@ -40,4 +41,4 @@ You should now see a counter counting down from 1 minute. Clicking it will incre
 
 ### Hosting in the Cloud
 
-This MRE is built using Node.JS 14. Checkout [DEPLOYING.md](https://github.com/Microsoft/mixed-reality-extension-sdk/blob/master/DEPLOYING.md) in the SDK repo for more suggestions.
+This MRE is built using Node.JS 14. Check out [DEPLOYING.md](https://github.com/Microsoft/mixed-reality-extension-sdk/blob/master/DEPLOYING.md) in the SDK repo for more suggestions.
