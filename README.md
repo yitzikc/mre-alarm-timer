@@ -37,6 +37,18 @@ You should now see a counter counting down from 1 minute. Clicking it will incre
 
 <img src='appearance.jpg'/>
 
+### Configuration
+
+The initial count and the increment applied to the counter when clicked can both be customized.
+This is done using query parameters in the URL.
+
+* _c_ - Set the initial _count_ in seconds. The default value is 60.
+* _i_ - Set the _increment_ in seconds. The default value is 60.
+
+Example: for running the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked:
+
+`ws://localhost:3901/?c=30&i=15`
+
 ### Hosting in the Cloud
 
 This MRE is built using Node.JS 14. Check out [DEPLOYING.md](https://github.com/Microsoft/mixed-reality-extension-sdk/blob/master/DEPLOYING.md) in the SDK repo for more suggestions.

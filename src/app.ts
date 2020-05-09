@@ -1,6 +1,7 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 import { Countdown } from './countdown'
+import { getParameterLastValue } from './parameter_set_util'
 
 /**
  * The main class of this app. All the logic goes here.
@@ -11,7 +12,15 @@ export default class AlarmTimer {
 	private countdownTimer?: Countdown = null;
 	private assets: MRE.AssetContainer;
 
-	constructor(private context: MRE.Context, private baseUrl: string) {
+	// Number of seconds to count initially
+	private readonly initialCount: number;
+
+	// Increment to the counter (in seconds) when clicked
+	private readonly increment: number;
+
+	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
+		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
+		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.context.onStarted(() => this.started());
 	}
 
@@ -53,11 +62,11 @@ export default class AlarmTimer {
 		});
 
 		this.countdownTimer = new Countdown(
-			60,
+			this.initialCount,
 			(value: string) => { this.timerContent.text.contents = value; });
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			this.countdownTimer.increment(60);
+			this.countdownTimer.increment(this.increment);
 		});
     }
     
