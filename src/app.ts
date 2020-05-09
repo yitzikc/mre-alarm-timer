@@ -1,38 +1,20 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
+import { Countdown } from './countdown'
+
 /**
  * The main class of this app. All the logic goes here.
  */
 export default class AlarmTimer {
 	private timerBody: MRE.Actor = null;
 	private timerContent: MRE.Actor = null;
+	private countdownTimer?: Countdown = null;
 	private assets: MRE.AssetContainer;
-	private count = 60;
-	private countdownUpdater: NodeJS.Timeout;
 
 	constructor(private context: MRE.Context, private baseUrl: string) {
 		this.context.onStarted(() => this.started());
 	}
 
-	private timerValue(): string {
-		const [minutes, seconds] =
-			[Math.floor(this.count / 60), this.count % 60].map(
-				(n: number) => n.toString().padStart(2, '0'));
-		return `${minutes}:${seconds}`;
-	}
-
-	private setTimer() {
-		this.countdownUpdater = setInterval(() => {
-			if (this.count > 0) {
-				this.count--;
-				this.timerContent.text.contents = this.timerValue();
-			} else {
-				clearInterval(this.countdownUpdater);
-				this.countdownUpdater = null;
-			}
-		}, 1000);
-		this.timerContent.text.contents = this.timerValue();
-	}
 	/**
 	 * Once the context is "started", initialize the app.
 	 */
@@ -57,7 +39,7 @@ export default class AlarmTimer {
 				name: 'timerContent',
 				parentId: this.timerBody.id,
 				text: {
-					contents: this.timerValue(),
+					contents: '',
 					anchor: MRE.TextAnchorLocation.MiddleCenter,
 					color: { r: 30 / 255, g: 30 / 255, b: 30 / 255 },
 					height: 0.3
@@ -70,15 +52,13 @@ export default class AlarmTimer {
 			}
 		});
 
-		this.setTimer();
+		this.countdownTimer = new Countdown(
+			60,
+			(value: string) => { this.timerContent.text.contents = value; });
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			this.count += 60;
-			if (this.countdownUpdater == null) {
-				this.setTimer();
-			}
+			this.countdownTimer.increment(60);
 		});
-
     }
     
 }
