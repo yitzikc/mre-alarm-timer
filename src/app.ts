@@ -77,9 +77,6 @@ export default class AlarmTimer {
 		this.alarmSound = this.assets.createSound(
 			'alarmSound',
 			{ uri: `${this.baseUrl}/alarm.wav` });
-		if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
-			this.activeMedia = this.rootActor.startSound(this.alarmSound.id, {});
-		}
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
@@ -89,14 +86,11 @@ export default class AlarmTimer {
 			},
 			() => {
 				if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
-					this.rootActor.startSound(this.alarmSound.id, {});
+					this.rootActor.startSound(this.alarmSound.id, { volume: 0.5  });
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
-				this.activeMedia = this.rootActor.startSound(this.alarmSound.id, {});
-			}
 			if (this.countdownTimer != undefined) {
 				this.countdownTimer.increment(this.increment);
 			}
