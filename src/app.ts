@@ -7,10 +7,15 @@ import { getParameterLastValue } from './parameter_set_util'
  * The main class of this app. All the logic goes here.
  */
 export default class AlarmTimer {
+	private rootActor?: MRE.Actor = undefined;
 	private timerBody?: MRE.Actor = undefined;
 	private timerContent?: MRE.Actor = undefined;
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
+
+	private alarmSound?: MRE.Sound = undefined;
+
+	private activeMedia: any;
 
 	// Number of seconds to count initially
 	private readonly initialCount: number;
@@ -18,13 +23,11 @@ export default class AlarmTimer {
 	// Increment to the counter (in seconds) when clicked
 	private readonly increment: number;
 
-	private readonly alarmSoundUrl: string;
 
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.assets = new MRE.AssetContainer(this.context);
-		this.alarmSoundUrl = baseUrl + '/alarm.mp3'
 		this.context.onStarted(() => this.started());
 	}
 
@@ -32,10 +35,17 @@ export default class AlarmTimer {
 	 * Once the context is "started", initialize the app.
 	 */
 	private async started() {
+		this.rootActor = MRE.Actor.Create(this.context, {
+            actor: {
+                name: 'Root Actor',
+            }
+        });
+		
 		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
 		this.timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
+				parentId: this.rootActor.id,
 				appearance: { meshId: square.id },
 				transform: {
 					app: {
@@ -64,11 +74,12 @@ export default class AlarmTimer {
 			}
 		});
 
-		const alarmSound = this.assets.createSound(
-			'alarm',
-			{ 'uri': this.alarmSoundUrl }
-		);
-
+		this.alarmSound = this.assets.createSound(
+			'alarmSound',
+			{ uri: `${this.baseUrl}/alarm.wav` });
+		if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
+			this.activeMedia = this.rootActor.startSound(this.alarmSound.id, {});
+		}
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
@@ -77,12 +88,15 @@ export default class AlarmTimer {
 				}
 			},
 			() => {
-				if (this.timerBody != undefined) {
-					this.timerBody.startSound(alarmSound.id, {});
+				if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
+					this.rootActor.startSound(this.alarmSound.id, {});
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
+			if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
+				this.activeMedia = this.rootActor.startSound(this.alarmSound.id, {});
+			}
 			if (this.countdownTimer != undefined) {
 				this.countdownTimer.increment(this.increment);
 			}
