@@ -76,7 +76,7 @@ export default class AlarmTimer {
 
 		this.alarmSound = this.assets.createSound(
 			'alarmSound',
-			{ uri: `${this.baseUrl}/alarm.wav` });
+			{ uri: `${this.baseUrl}/alarm.ogg` });
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
