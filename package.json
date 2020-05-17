@@ -1,6 +1,9 @@
 {
   "name": "mre-alarm-timer",
   "version": "0.0.1",
+  "engines": {
+    "node": "14.1.x"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
