@@ -1,4 +1,3 @@
-import { assertType } from 'typescript-is';
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 import { Countdown } from './countdown'
@@ -53,7 +52,7 @@ export default class AlarmTimer {
 		this.timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
-				parentId: assertType<MRE.Actor>(this.rootActor).id,
+				parentId: this.rootActor!.id,
 				appearance: { meshId: square.id },
 				transform: {
 					app: {
