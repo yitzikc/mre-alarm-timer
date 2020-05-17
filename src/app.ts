@@ -15,6 +15,7 @@ export default class AlarmTimer {
 	private assets: MRE.AssetContainer;
 
 	private alarmSound?: MRE.Sound = undefined;
+	private soundPlaying?: MRE.MediaInstance = undefined;
 
 	// Number of seconds to count initially
 	private readonly initialCount: number;
@@ -92,8 +93,10 @@ export default class AlarmTimer {
 				}
 			},
 			() => {
-				if ((this.rootActor != undefined) && (this.alarmSound != undefined)) {
-					this.rootActor.startSound(this.alarmSound.id, { volume: 0.5  });
+				if (this.alarmSound != undefined) {
+					// TODO: Keep the media instance
+					this.soundPlaying =
+						this.rootActor!.startSound(this.alarmSound.id, { volume: 0.5  });
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
@@ -104,7 +107,12 @@ export default class AlarmTimer {
 			else {
 				this.countdownTimer?.increment(this.increment);
 			}
+
+			if (this.soundPlaying != undefined) {
+				this.soundPlaying.setState({paused: true});
+				this.soundPlaying.stop();
+				this.soundPlaying = undefined;
+			}
 		});
     }
-    
 }
