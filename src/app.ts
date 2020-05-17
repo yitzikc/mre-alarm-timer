@@ -98,13 +98,11 @@ export default class AlarmTimer {
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			if (this.countdownTimer != undefined) {
-				if (this.setToInitial) {
-					this.countdownTimer.setValue(this.initialCount)
-				}
-				else {
-					this.countdownTimer.increment(this.increment);
-				}
+			if (this.setToInitial) {
+				this.countdownTimer?.setValue(this.initialCount)
+			}
+			else {
+				this.countdownTimer?.increment(this.increment);
 			}
 		});
     }
