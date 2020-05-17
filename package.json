@@ -16,12 +16,14 @@
     "@types/semver": "^7.1.0",
     "@types/ws": "^7.2.4",
     "rimraf": "^3.0.2",
+    "ttypescript": "^1.5.10",
     "typescript": "^3.8.3"
   },
   "dependencies": {
     "@microsoft/mixed-reality-extension-sdk": "^0.18.1",
     "dotenv": "^8.2.0",
     "dtrace-provider": "^0.8.8",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "typescript-is": "^0.16.0"
   }
 }
