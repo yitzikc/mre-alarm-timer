@@ -15,8 +15,6 @@ export default class AlarmTimer {
 
 	private alarmSound?: MRE.Sound = undefined;
 
-	private activeMedia: any;
-
 	// Number of seconds to count initially
 	private readonly initialCount: number;
 
