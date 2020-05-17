@@ -46,10 +46,15 @@ This is done using query parameters in the URL.
 
 * _c_ - Set the initial _count_ in seconds. The default value is 60.
 * _i_ - Set the _increment_ in seconds. The default value is 60.
+If the value is set to _0_ the behavior changes. A click would instead set the count back to the initial count value.
 
 Example: for running the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked:
 
 `ws://localhost:3901/?c=30&i=15`
+
+Example: Run the MRE on a server with SSL. Set the counter to 60 seconds whenever clicked
+
+`wss://my.ssl.server.io/?c=60&i=0`
 
 ### Hosting in the Cloud
 

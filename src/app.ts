@@ -30,6 +30,10 @@ export default class AlarmTimer {
 		this.context.onStarted(() => this.started());
 	}
 
+	get setToInitial(): boolean {
+		return this.increment == 0;
+	}
+
 	/**
 	 * Once the context is "started", initialize the app.
 	 */
@@ -95,7 +99,12 @@ export default class AlarmTimer {
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
 			if (this.countdownTimer != undefined) {
-				this.countdownTimer.increment(this.increment);
+				if (this.setToInitial) {
+					this.countdownTimer.setValue(this.initialCount)
+				}
+				else {
+					this.countdownTimer.increment(this.increment);
+				}
 			}
 		});
     }

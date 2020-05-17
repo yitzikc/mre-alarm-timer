@@ -10,11 +10,15 @@ export class Countdown {
             this.setTimer();
     }
 
-    public increment = (incrementBy: number) => {
-        this.count += incrementBy;
+    public setValue = (countSeconds: number) => {
+        this.count = countSeconds;
         if (this.countdownUpdater == null) {
             this.setTimer();
         }
+    }
+
+    public increment = (incrementBy: number) => {
+        this.setValue(this.count + incrementBy);
     }
 
     public getDisplayValue = () => {
