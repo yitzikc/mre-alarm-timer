@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./build && npx ttsc",
+    "build": "./node_modules/rimraf/bin.js ./build && npx ttsc",
     "start": "npm run build && node build/server.js"
   },
   "keywords": [],
