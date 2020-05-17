@@ -13,6 +13,8 @@ Node.js 14.1 with Typescript support.
 * Change to the top-level directory of the repository.
 * If you want to access the MRE by a hostname other than _localhost_,
 create a _.env_ file to define your desired hostname (see _.env.example_).
+Note, that some hosting MRE SDK can detect correctly the settings used
+by some popular hosting environments.
 * `npm install` This will install all dependent packages. (and will do very
 little if there are no changes).
 * `npm run build` This should not report any errors.

@@ -10,7 +10,6 @@ process.on('unhandledRejection', reason => console.log('unhandledRejection', rea
 
 // Read .env if file exists
 dotenv.config();
-const WWW_HOSTNAME = process.env.WWW_HOSTNAME || 'localhost';
 
 // This function starts the MRE server. It will be called immediately unless
 // we detect that the code is running in a debuggable environment. If so, a
@@ -19,7 +18,6 @@ const WWW_HOSTNAME = process.env.WWW_HOSTNAME || 'localhost';
 function runApp() {
 	// Start listening for connections, and serve static files.
 	const server = new WebHost({
-		baseUrl: `http://${WWW_HOSTNAME}`,
 		baseDir: resolvePath(__dirname, '../public')
 	});
 
