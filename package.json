@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && npx ttsc",
-    "start": "npm run build && node build/index.js"
+    "start": "npm run build && node build/server.js"
   },
   "keywords": [],
   "author": "",
