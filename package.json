@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash": "^4.14.151",
     "@types/restify": "^8.4.2",
     "@types/semver": "^7.1.0",
     "@types/ws": "^7.2.4",
@@ -25,6 +26,7 @@
     "@microsoft/mixed-reality-extension-sdk": "^0.18.1",
     "dotenv": "^8.2.0",
     "dtrace-provider": "^0.8.8",
+    "lodash": "^4.17.15",
     "path": "^0.12.7"
   }
 }

@@ -1,4 +1,5 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { clamp } from 'lodash';
 
 import { Countdown } from './countdown'
 import { getParameterLastValue } from './parameter_set_util'
@@ -22,10 +23,14 @@ export default class AlarmTimer {
 	// Increment to the counter (in seconds) when clicked
 	private readonly increment: number;
 
+	private readonly volume: number;
+
+	private readonly maxVolume = 100.0;
 
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
+		this.volume = clamp(parseFloat(getParameterLastValue(params, 'v', '50')), 0, this.maxVolume) / this.maxVolume;
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
 	}
@@ -95,7 +100,7 @@ export default class AlarmTimer {
 				if (this.alarmSound != undefined) {
 					// TODO: Keep the media instance
 					this.soundPlaying =
-						this.rootActor!.startSound(this.alarmSound.id, { volume: 0.5  });
+						this.rootActor!.startSound(this.alarmSound.id, { volume: this.volume });
 				}
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
