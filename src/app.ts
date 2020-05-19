@@ -27,12 +27,16 @@ export default class AlarmTimer {
 
 	private readonly maxVolume = 100.0;
 
+	private readonly viewableByModsOnly: boolean;
+
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.volume = clamp(parseFloat(getParameterLastValue(params, 'v', '50')), 0, this.maxVolume) / this.maxVolume;
+		this.viewableByModsOnly = (getParameterLastValue(params, 'mo', 'n')[0].toLowerCase() == 'y');
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
+		this.context.onUserJoined(user => this.onUserJoined(user));
 	}
 
 	get setToInitial(): boolean {
@@ -49,15 +53,33 @@ export default class AlarmTimer {
             }
 		});
 
-		await this.createBody();
+		if (! this.viewableByModsOnly) {
+			await this.createBody();
+		}
 	}
 
-	private async createBody() {
+
+	private async onUserJoined(user: MRE.User) {
+		if (this.viewableByModsOnly) {
+			// FIXME: Figure out how the altspacevr-role value is laid out
+			// and use some more exact matching
+			const isModerator = user.properties["altspacevr-roles"].toLowerCase().includes("moderator");
+			if (isModerator) {
+				await this.createBody(user.id);
+			}
+		}
+		return;
+	}
+
+	private async createBody(exclusiveToUser: MRE.Guid | undefined = undefined) {
+		// TODO: Allow this to be private to a user, so we can
+		// make the alarm only visible to moderators
 		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
 		this.timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
 				parentId: this.rootActor!.id,
+				exclusiveToUser: exclusiveToUser,
 				appearance: { meshId: square.id },
 				transform: {
 					app: {
