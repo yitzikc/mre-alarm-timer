@@ -52,12 +52,16 @@ export default class AlarmTimer {
                 name: 'Root Actor',
             }
 		});
+	
+		const alarmSoundUri = `${this.baseUrl}/alarm.ogg`
+		this.alarmSound = this.assets.createSound(
+			'alarmSound',
+			{ uri: alarmSoundUri });
 
 		if (! this.viewableByModsOnly) {
 			await this.createBody();
 		}
 	}
-
 
 	private async onUserJoined(user: MRE.User) {
 		if (this.viewableByModsOnly) {
@@ -108,9 +112,6 @@ export default class AlarmTimer {
 			}
 		});
 
-		this.alarmSound = this.assets.createSound(
-			'alarmSound',
-			{ uri: `${this.baseUrl}/alarm.ogg` });
 		this.countdownTimer = new Countdown(
 			this.initialCount,
 			(value: string) => {
@@ -120,7 +121,6 @@ export default class AlarmTimer {
 			},
 			() => {
 				if (this.alarmSound != undefined) {
-					// TODO: Keep the media instance
 					this.soundPlaying =
 						this.rootActor!.startSound(this.alarmSound.id, { volume: this.volume });
 				}
