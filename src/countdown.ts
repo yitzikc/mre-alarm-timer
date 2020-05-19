@@ -10,6 +10,17 @@ export class Countdown {
             this.setTimer();
     }
 
+    public get isPaused(): boolean {
+        return this.countdownUpdater == null;
+    }
+
+    public pause = () => {
+        if (this.countdownUpdater != null) {
+            clearInterval(this.countdownUpdater);
+            this.countdownUpdater = null;
+        }
+    }
+
     public setValue = (countSeconds: number) => {
         this.count = countSeconds;
         if (this.countdownUpdater == null) {
@@ -35,10 +46,7 @@ export class Countdown {
                 this.count--;
                 this.updateValue();
             } else {
-                if (this.countdownUpdater != null) {
-                    clearInterval(this.countdownUpdater);
-                    this.countdownUpdater = null;
-                }
+                this.pause();
                 this.onZeroReached();
             }
         }, 1000);

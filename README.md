@@ -35,7 +35,13 @@ in to the present objects list, and make sure "Is Playing" is checked.
 with red/green/blue spikes on it), rendering on top of the MRE. You can use the
 anchor to move the MRE around. To hide the anchor, uncheck "Edit Mode".
 
-You should now see a counter counting down from 1 minute. Clicking it will increment the count time by 1 minute.
+### Behavior
+
+You should now see a counter counting down from the count value you've set towards 0 minute.
+Clicking it the first time will stop any alarm that's playing, or if the
+counter is still counting, it will be paused. Clicking a second time
+will either increment the count time by the increment value, if it is non-zero, or
+if it is 0, set the counter to the initial count value.
 
 <img src='appearance.jpg'/>
 

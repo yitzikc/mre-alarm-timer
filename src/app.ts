@@ -105,7 +105,12 @@ export default class AlarmTimer {
 			});
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			if (this.setToInitial) {
+			const soundIsPlaying = (this.soundPlaying != undefined);
+
+			if (soundIsPlaying || ! this.countdownTimer?.isPaused) {
+				this.countdownTimer?.pause();
+			}
+			else if (this.setToInitial) {
 				this.countdownTimer?.setValue(this.initialCount)
 			}
 			else {
