@@ -119,12 +119,8 @@ export default class AlarmTimer {
 					this.timerContent.text.contents = value;
 				}
 			},
-			() => {
-				if (this.alarmSound != undefined) {
-					this.soundPlaying =
-						this.rootActor!.startSound(this.alarmSound.id, { volume: this.volume });
-				}
-			});
+			this.startSound
+			);
 		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
 			const soundIsPlaying = (this.soundPlaying != undefined);
@@ -139,11 +135,26 @@ export default class AlarmTimer {
 				this.countdownTimer?.increment(this.increment);
 			}
 
-			if (this.soundPlaying != undefined) {
-				this.soundPlaying.setState({paused: true});
-				this.soundPlaying.stop();
-				this.soundPlaying = undefined;
-			}
+			this.stopSound();
+
 		});
-    }
+	}
+
+	private startSound = () => {
+		this.stopSound();
+		if (this.alarmSound != undefined) {
+			this.soundPlaying =
+				this.rootActor!.startSound(this.alarmSound.id, { volume: this.volume });
+		}
+		return
+	}
+
+	private stopSound = () => {
+		if (this.soundPlaying != undefined) {
+			this.soundPlaying.setState({paused: true});
+			this.soundPlaying.stop();
+			this.soundPlaying = undefined;
+		}
+		return
+	}
 }
