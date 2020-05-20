@@ -54,12 +54,15 @@ This is done using query parameters in the URL.
 * _i_ - Set the _increment_ in seconds. The default value is 60.
 * _v_ - Set the _volume_ of the alarm. A value between 0 and 100. The default is 50.
 * _mo_ - Moderator only. If set to _y_, then only moderators can view and manipulate the counter.
+* _as_ - Alarm sound. Relative path of the audio file to play as alarm in the public directory from which media are served.
+It should point to a _.wav_ or _.ogg_ file.
 The allowed values are _y_ or _n_.
 If the value is set to _0_ the behavior changes. A click would instead set the count back to the initial count value.
 
-Example: for running the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked:
+Example: Run the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked.
+A custom audio file _myalarm.wav_ is specified
 
-`ws://localhost:3901/?c=30&i=15`
+`ws://localhost:3901/?c=30&i=15&myalarm.wav`
 
 Example: Run the MRE on a server with SSL. Set the counter to 60 seconds whenever clicked. Only moderators can view the timer.
 

@@ -12,6 +12,8 @@ export default class AlarmTimer {
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
 
+	// Relative path of the audio file to play as alarm in the public directory
+	private readonly alarmSoundPath: string;
 	private alarmSound?: MRE.Sound = undefined;
 	private soundPlaying?: MRE.MediaInstance = undefined;
 
@@ -32,6 +34,7 @@ export default class AlarmTimer {
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.volume = clamp(parseFloat(getParameterLastValue(params, 'v', '50')), 0, this.maxVolume) / this.maxVolume;
 		this.viewableByModsOnly = (getParameterLastValue(params, 'mo', 'n')[0].toLowerCase() == 'y');
+		this.alarmSoundPath = getParameterLastValue(params, 'as', 'alarm.ogg');
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
 		this.context.onUserJoined(user => this.onUserJoined(user));
@@ -51,7 +54,7 @@ export default class AlarmTimer {
             }
 		});
 	
-		const alarmSoundUri = `${this.baseUrl}/alarm.ogg`
+		const alarmSoundUri = `${this.baseUrl}/${this.alarmSoundPath}`
 		this.alarmSound = this.assets.createSound(
 			'alarmSound',
 			{ uri: alarmSoundUri });
