@@ -31,6 +31,7 @@ bower_components
 
 # Javascript build artifacts
 build/*.js
+build/*.map
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
@@ -75,3 +76,6 @@ app.zip
 .orig
 
 *.tsbuildinfo
+
+# VS Code files
+.vscode/
