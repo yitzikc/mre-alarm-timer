@@ -71,3 +71,8 @@ Example: Run the MRE on a server with SSL. Set the counter to 60 seconds wheneve
 ### Hosting in the Cloud
 
 This MRE is built using Node.JS 14. Check out [DEPLOYING.md](https://github.com/Microsoft/mixed-reality-extension-sdk/blob/master/DEPLOYING.md) in the SDK repo for more suggestions.
+
+In particular, deployment to a Heroku Dyno is well supported. To deploy there, set-up your project
+to use Node-JS and set the environment variable BASE_URL to be your Heroku https URL.
+Use the corresponding _wss://_ URL to access the MRE in the world. Everything else should
+be handled automatically by Heroku.
