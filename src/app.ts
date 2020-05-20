@@ -152,7 +152,13 @@ export default class AlarmTimer {
 		this.stopSound();
 		if (this.alarmSound != undefined) {
 			this.soundPlaying =
-				this.rootActor!.startSound(this.alarmSound.id, { volume: this.volume, looping: true });
+				this.rootActor!.startSound(this.alarmSound.id,
+							   { volume: this.volume,
+							    looping: true,
+							    doppler: 0,
+							    spread: 0,
+							    rolloffStartDistance: 100,
+							   });
 		}
 		return
 	}
