@@ -9,8 +9,6 @@ import { getParameterLastValue } from './parameter_set_util'
  */
 export default class AlarmTimer {
 	private rootActor?: MRE.Actor = undefined;
-	private timerBody?: MRE.Actor = undefined;
-	private timerContent?: MRE.Actor = undefined;
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
 
@@ -58,6 +56,14 @@ export default class AlarmTimer {
 			'alarmSound',
 			{ uri: alarmSoundUri });
 
+		this.countdownTimer = new Countdown(
+			this.initialCount,
+			(value: string) => {
+				this.setTimerText(value);
+			},
+			this.startSound
+			);
+
 		if (! this.viewableByModsOnly) {
 			await this.createBody();
 		}
@@ -76,10 +82,8 @@ export default class AlarmTimer {
 	}
 
 	private async createBody(exclusiveToUser: MRE.Guid | undefined = undefined) {
-		// TODO: Allow this to be private to a user, so we can
-		// make the alarm only visible to moderators
 		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
-		this.timerBody = MRE.Actor.Create(this.context, {
+		let timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
 				parentId: this.rootActor!.id,
@@ -92,12 +96,12 @@ export default class AlarmTimer {
 				}
 			}
 		});
-		this.timerBody.setCollider(MRE.ColliderType.Box, true);
+		timerBody.setCollider(MRE.ColliderType.Box, true);
 
-		this.timerContent = MRE.Actor.Create(this.context, {
+		MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerContent',
-				parentId: this.timerBody.id,
+				parentId: timerBody.id,
 				text: {
 					contents: '',
 					anchor: MRE.TextAnchorLocation.MiddleCenter,
@@ -106,22 +110,13 @@ export default class AlarmTimer {
 				},
 				transform: {
 					local: {
-						position: { x: 0, y: 0, z: -this.timerBody.transform.app.position.z }
+						position: { x: 0, y: 0, z: -timerBody.transform.app.position.z }
 					}
 				}
 			}
 		});
 
-		this.countdownTimer = new Countdown(
-			this.initialCount,
-			(value: string) => {
-				if (this.timerContent != undefined) {
-					this.timerContent.text.contents = value;
-				}
-			},
-			this.startSound
-			);
-		const buttonBehavior = this.timerBody.setBehavior(MRE.ButtonBehavior);
+		const buttonBehavior = timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
 			const soundIsPlaying = (this.soundPlaying != undefined);
 
@@ -138,6 +133,16 @@ export default class AlarmTimer {
 			this.stopSound();
 
 		});
+	}
+
+	private get timerContent(): Array<MRE.Actor> {
+		return this.rootActor?.findChildrenByName("timerContent", true) || [];
+	}
+
+	private setTimerText = (value: string) => {
+		this.timerContent.forEach((tc: MRE.Actor) => {
+			tc.text.contents = value;
+		})
 	}
 
 	private startSound = () => {
