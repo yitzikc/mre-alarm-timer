@@ -62,7 +62,7 @@ If the value is set to _0_ the behavior changes. A click would instead set the c
 Example: Run the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked.
 A custom audio file _myalarm.wav_ is specified
 
-`ws://localhost:3901/?c=30&i=15&myalarm.wav`
+`ws://localhost:3901/?c=30&i=15&as=myalarm.wav`
 
 Example: Run the MRE on a server with SSL. Set the counter to 60 seconds whenever clicked. Only moderators can view the timer.
 
