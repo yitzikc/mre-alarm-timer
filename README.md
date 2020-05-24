@@ -53,6 +53,9 @@ This is done using query parameters in the URL.
 * _c_ - Set the initial _count_ in seconds. The default value is 60.
 * _i_ - Set the _increment_ in seconds. The default value is 60.
 * _v_ - Set the _volume_ of the alarm. A value between 0 and 100. The default is 50.
+* _l_ - Loop the sound until paused. The allowed values are _y_ or _n_. The default is _n_.
+* _am_ - Ambient sound. If enabled, set the sound to play with uniform volume within a large distance from the source.
+The allowed values are _y_ or _n_. The default is _n_.
 * _mo_ - Moderator only. If set to _y_, then only moderators can view and manipulate the counter.
 * _as_ - Alarm sound. Relative path of the audio file to play as alarm in the public directory from which media are served.
 It should point to a _.wav_ or _.ogg_ file.

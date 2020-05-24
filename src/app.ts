@@ -2,7 +2,7 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { clamp } from 'lodash';
 
 import { Countdown } from './countdown'
-import { getParameterLastValue } from './parameter_set_util'
+import { getParameterLastValue, getBooleanOption } from './parameter_set_util'
 
 /**
  * The main class of this app. All the logic goes here.
@@ -16,14 +16,13 @@ export default class AlarmTimer {
 	private readonly alarmSoundPath: string;
 	private alarmSound?: MRE.Sound = undefined;
 	private soundPlaying?: MRE.MediaInstance = undefined;
+	private readonly audioOptions: MRE.SetAudioStateOptions;
 
 	// Number of seconds to count initially
 	private readonly initialCount: number;
 
 	// Increment to the counter (in seconds) when clicked
 	private readonly increment: number;
-
-	private readonly volume: number;
 
 	private readonly maxVolume = 100.0;
 
@@ -32,12 +31,31 @@ export default class AlarmTimer {
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
-		this.volume = clamp(parseFloat(getParameterLastValue(params, 'v', '50')), 0, this.maxVolume) / this.maxVolume;
-		this.viewableByModsOnly = (getParameterLastValue(params, 'mo', 'n')[0].toLowerCase() == 'y');
+		this.viewableByModsOnly = getBooleanOption(params, 'mo', false);
 		this.alarmSoundPath = getParameterLastValue(params, 'as', 'alarm.ogg');
+		this.audioOptions = this.getAudioOptions(params);
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
 		this.context.onUserJoined(user => this.onUserJoined(user));
+	}
+
+	private getAudioOptions = (params: MRE.ParameterSet): MRE.SetAudioStateOptions =>  {
+		const volume = clamp(
+			parseFloat(getParameterLastValue(params, 'v', '50')),
+			0,
+			this.maxVolume
+		) / this.maxVolume;
+		const looping = getBooleanOption(params, 'l', false);
+		let options: MRE.SetAudioStateOptions = { volume: volume, looping: looping };
+
+		const ambient = getBooleanOption(params, 'am', false);
+		if (ambient) {
+			options.doppler = 0;
+			options.spread = 0;
+			options.rolloffStartDistance = 100;
+		}
+
+		return options;
 	}
 
 	get setToInitial(): boolean {
@@ -152,13 +170,7 @@ export default class AlarmTimer {
 		this.stopSound();
 		if (this.alarmSound != undefined) {
 			this.soundPlaying =
-				this.rootActor!.startSound(this.alarmSound.id,
-							   { volume: this.volume,
-							    looping: true,
-							    doppler: 0,
-							    spread: 0,
-							    rolloffStartDistance: 100,
-							   });
+				this.rootActor!.startSound(this.alarmSound.id, this.audioOptions);
 		}
 		return
 	}

@@ -11,3 +11,9 @@ export function  getParameterLastValue(params: ParameterSet, name: string, dflVa
 
     return dflValue;
 }
+
+// Get the value of a boolean parameter whose value can be 'y' or 'n'
+export function getBooleanOption(params: ParameterSet, name: string, dfl = false): boolean {
+    const assumeIfNotGiven = dfl ? 'y' : 'n'
+    return (getParameterLastValue(params, name, assumeIfNotGiven)[0].toLowerCase() == 'y');
+}
