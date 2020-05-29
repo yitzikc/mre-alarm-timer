@@ -79,3 +79,10 @@ In particular, deployment to a Heroku Dyno is well supported. To deploy there, s
 to use Node-JS and set the environment variable BASE_URL to be your Heroku https URL.
 Use the corresponding _wss://_ URL to access the MRE in the world. Everything else should
 be handled automatically by Heroku.
+
+### Using custom audio files
+
+To use your own audio files, you need to get them into the _public_ directory in _.ogg_ or _.wav_ files. Then you can use
+the _as_ parameter to specify your own audio file, A way to accomplish this in Heroku (or other environments that use
+git push to deploy) would be to clone this repository, then commit your audio files to your local Git repository and
+push that to your hosting environment.
