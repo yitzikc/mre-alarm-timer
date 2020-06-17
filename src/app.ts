@@ -55,6 +55,9 @@ export default class AlarmTimer {
 			options.rolloffStartDistance = 100;
 		}
 
+		// Always start from the beginning
+		options.time = 0;
+
 		return options;
 	}
 
@@ -177,7 +180,7 @@ export default class AlarmTimer {
 
 	private stopSound = () => {
 		if (this.soundPlaying != undefined) {
-			this.soundPlaying.setState({paused: true});
+			this.soundPlaying.setState({paused: true, time: 0});
 			this.soundPlaying.stop();
 			this.soundPlaying = undefined;
 		}
