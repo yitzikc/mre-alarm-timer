@@ -1,0 +1,37 @@
+{
+  "name": "mre-alarm-timer",
+  "version": "0.0.2",
+  "engines": {
+    "node": "14.1.x"
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< HEAD
+    "build": "npx rimraf ./build && npx tsc",
+    "start": "npm run build && node build/server.js"
+=======
+    "build": "rimraf build && tsc",
+    "start": "node build/server.js"
+>>>>>>> 1c7727c... feat: Adding ambient looping audio
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.14.152",
+    "@types/restify": "^8.4.2",
+    "@types/semver": "^7.2.0",
+    "@types/ws": "^7.2.4",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "@microsoft/mixed-reality-extension-sdk": "^0.18.1",
+    "dotenv": "^8.2.0",
+    "dtrace-provider": "^0.8.8",
+    "lodash": "^4.17.15",
+    "path": "^0.12.7"
+  }
+}
