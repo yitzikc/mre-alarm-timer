@@ -27,12 +27,15 @@ export default class AlarmTimer {
 	private readonly maxVolume = 100.0;
 
 	private readonly viewableByModsOnly: boolean;
+	private readonly pauseOnly: boolean;
+	private isPaused: boolean = false;
 
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
 		this.increment = parseInt(getParameterLastValue(params, 'i', '60'));
 		this.viewableByModsOnly = getBooleanOption(params, 'mo', false);
 		this.alarmSoundPath = getParameterLastValue(params, 'as', 'alarm.ogg');
+		this.pauseOnly = getBooleanOption(params, 'p', false);
 		this.audioOptions = this.getAudioOptions(params);
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
@@ -145,7 +148,7 @@ export default class AlarmTimer {
 
 		const buttonBehavior = timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			const soundIsPlaying = (this.soundPlaying != undefined);
+			const soundIsPlaying = (this.soundPlaying != undefined) && !this.isPaused;
 
 			if (soundIsPlaying || ! this.countdownTimer?.isPaused) {
 				this.countdownTimer?.pause();
@@ -173,16 +176,28 @@ export default class AlarmTimer {
 	}
 
 	private startSound = () => {
-		this.stopSound();
+		if (!this.pauseOnly) {
+			this.stopSound();
+		}
 		if (this.alarmSound != undefined) {
 			this.soundPlaying =
 				this.rootActor!.startSound(this.alarmSound.id, this.audioOptions);
+		} else if (this.pauseOnly) {
+			this.soundPlaying?.setState({paused: false});
+			this.soundPlaying?.resume();
+			this.isPaused = false;
 		}
 		return
 	}
 
 	private stopSound = () => {
 		if (this.soundPlaying != undefined) {
+			if (this.pauseOnly) {
+				this.soundPlaying.setState({paused: true});
+				this.soundPlaying.pause();
+				this.isPaused = true;
+				return;
+			}
 			this.soundPlaying.setState({paused: true, time: 0});
 			this.soundPlaying.stop();
 			this.soundPlaying = undefined;
