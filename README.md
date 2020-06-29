@@ -55,12 +55,15 @@ This is done using query parameters in the URL.
 If the value is set to _0_ the behavior changes. A click would instead set the count back to the initial count value.
 * _v_ - Set the _volume_ of the alarm. A value between 0 and 100. The default is 50.
 * _l_ - Loop the sound until paused. The allowed values are _y_ or _n_. The default is _n_.
+* _p_ - Pause-only mode. While the sound is playing, clicking the MRE will alternately pause and resume
+the playback. The allowed values are _y_ or _n_. The default is _n_.
 * _am_ - Ambient sound. If enabled, set the sound to play with uniform volume within a large distance from the source.
 The allowed values are _y_ or _n_. The default is _n_.
 * _mo_ - Moderator only. If set to _y_, then only moderators can view and manipulate the counter.
-* _as_ - Alarm sound. Relative path of the audio file to play as alarm in the public directory from which media are served.
-It should point to a _.wav_ or _.ogg_ file.
-The allowed values are _y_ or _n_.
+* _as_ - Alarm sound. An _http_ or _https_ URL pointing to of the audio file to play as alarm.
+Alternatively, the relative path of the audio file in the public directory from which media are served.
+It should point to a _.wav_ or _.ogg_ file. Note, that if a full URL is used, it will likely require
+percent-quoting of some characters.
 
 Example: Run the MRE locally with an initial count of 30 seconds, incremented by 15 seconds whenever the counter is clicked.
 A custom audio file _myalarm.wav_ is specified
