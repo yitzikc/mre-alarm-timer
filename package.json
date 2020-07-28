@@ -15,12 +15,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/lodash": "^4.14.152",
+    "@types/lodash": "^4.14.158",
     "@types/restify": "^8.4.2",
-    "@types/semver": "^7.2.0",
-    "@types/ws": "^7.2.4",
+    "@types/semver": "^7.3.1",
+    "@types/ws": "^7.2.6",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@microsoft/mixed-reality-extension-sdk": "^0.19.2",
