@@ -12,6 +12,12 @@ export default class AlarmTimer {
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
 
+	// Specific assets
+	private readonly buttonSquare: MRE.Mesh;
+	private readonly buttonDefaultLocalTransform: MRE.Vector3Like = {
+		x: 0, y: 0, z: -0.2
+	};
+
 	// Relative path of the audio file to play as alarm in the public directory
 	private readonly alarmSoundPath: string;
 	private alarmSound?: MRE.Sound = undefined;
@@ -40,6 +46,9 @@ export default class AlarmTimer {
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
 		this.context.onUserJoined(user => this.onUserJoined(user));
+
+		// Initialize assets
+		this.buttonSquare = this.assets.createBoxMesh('buttonSquare', 0.25, 0.25, 0.2);
 	}
 
 	private getAudioOptions = (params: MRE.ParameterSet): MRE.SetAudioStateOptions =>  {
@@ -112,16 +121,16 @@ export default class AlarmTimer {
 	}
 
 	private async createBody(exclusiveToUser: MRE.Guid | undefined = undefined) {
-		const square = this.assets.createBoxMesh('square', 1.2, 0.5, 0.20);
+		const textRectangle = this.assets.createBoxMesh('textRectangle', 1.2, 0.5, 0.20);
 		let timerBody = MRE.Actor.Create(this.context, {
 			actor: {
 				name: 'timerBody',
 				parentId: this.rootActor!.id,
 				exclusiveToUser: exclusiveToUser,
-				appearance: { meshId: square.id },
+				appearance: { meshId: textRectangle.id },
 				transform: {
 					app: {
-						position: { x: 0, y: 0.5, z: 0.2 },
+						position: { x: 0, y: 0.5, z: -this.buttonDefaultLocalTransform.z },
 					}
 				}
 			}
@@ -162,6 +171,58 @@ export default class AlarmTimer {
 
 			this.stopSound();
 
+		});
+
+		const captions: Array<string> = [ ">", "||" , "+", "-" ];
+		for (var i = 0; i < captions.length; i++) {
+			this.createButton(
+				captions[i],
+				i,
+				{ exclusiveToUser: exclusiveToUser });
+		}
+
+		return;
+	}
+
+	private createButton = (
+		caption: string,
+		position: number,
+		actorProperties: Partial<MRE.ActorLike>) => {
+		let button = MRE.Actor.Create(this.context, {
+			actor: Object.assign({
+				name: `button${position + 1}`,
+				parentId: this.rootActor!.id,
+				appearance: { meshId: this.buttonSquare.id },
+				transform: {
+					app: {
+						position: Object.assign({},
+							this.buttonDefaultLocalTransform,
+							{ x: position * 0.3 - 0.5 }
+						),
+					}
+				}
+			}, actorProperties),
+		});
+
+		MRE.Actor.Create(this.context, {
+			actor: {
+				name: `button${position + 1}Content`,
+				parentId: button.id,
+				text: {
+					contents: caption,
+					justify: MRE.TextJustify.Center,
+					font: MRE.TextFontFamily.SansSerif,
+					anchor: MRE.TextAnchorLocation.MiddleCenter,
+					color: { r: 30 / 255, g: 30 / 255, b: 30 / 255 },
+					height: 0.2
+				},
+				transform: {
+					local: {
+						position: { x: 0, y: 0, z: -0.2 }
+						//rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI / 2.0)
+					}
+				}
+			}
 		});
 	}
 
