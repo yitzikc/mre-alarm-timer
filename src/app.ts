@@ -241,7 +241,7 @@ export default class AlarmTimer {
 				},
 				transform: {
 					local: {
-						position: { x: 0, y: 0, z: -0.2 },
+						position: Object.assign(this.buttonDefaultLocalTransform, { x: 0, y: 0 }),
 						rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI * config.rotationDeg / 180.0)
 					}
 				}
