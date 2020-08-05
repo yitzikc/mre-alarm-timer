@@ -4,6 +4,12 @@ import { clamp } from 'lodash';
 import { Countdown } from './countdown'
 import { getParameterLastValue, getBooleanOption } from './parameter_set_util'
 
+interface buttonConfig {
+	caption: string,
+	rotationDeg: number,
+	handler: () => void
+};
+
 /**
  * The main class of this app. All the logic goes here.
  */
@@ -173,10 +179,27 @@ export default class AlarmTimer {
 
 		});
 
-		const captions: Array<string> = [ ">", "||" , "+", "-" ];
-		for (var i = 0; i < captions.length; i++) {
+		const buttonConfigs: Array<buttonConfig> = [
+			{
+				caption: ">",
+				rotationDeg: 0,
+				handler: () => {}
+			}, {
+				caption: "=",
+				rotationDeg: 90,
+				handler: () => {}
+			}, {
+				caption:  "^",
+				rotationDeg: 0,
+				handler: () => {}
+			}, {
+				caption: "^",
+				rotationDeg: 180,
+				handler: () => {}
+			}];
+		for (var i = 0; i < buttonConfigs.length; i++) {
 			this.createButton(
-				captions[i],
+				buttonConfigs[i],
 				i,
 				{ exclusiveToUser: exclusiveToUser });
 		}
@@ -185,7 +208,7 @@ export default class AlarmTimer {
 	}
 
 	private createButton = (
-		caption: string,
+		config: buttonConfig,
 		position: number,
 		actorProperties: Partial<MRE.ActorLike>) => {
 		let button = MRE.Actor.Create(this.context, {
@@ -209,7 +232,7 @@ export default class AlarmTimer {
 				name: `button${position + 1}Content`,
 				parentId: button.id,
 				text: {
-					contents: caption,
+					contents: config.caption,
 					justify: MRE.TextJustify.Center,
 					font: MRE.TextFontFamily.SansSerif,
 					anchor: MRE.TextAnchorLocation.MiddleCenter,
@@ -218,8 +241,8 @@ export default class AlarmTimer {
 				},
 				transform: {
 					local: {
-						position: { x: 0, y: 0, z: -0.2 }
-						//rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI / 2.0)
+						position: { x: 0, y: 0, z: -0.2 },
+						rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI * config.rotationDeg / 180.0)
 					}
 				}
 			}
