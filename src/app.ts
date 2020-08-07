@@ -7,7 +7,7 @@ import { getParameterLastValue, getBooleanOption } from './parameter_set_util'
 interface buttonConfig {
 	caption: string,
 	rotationDeg: number,
-	handler: () => void
+	clickHandler: () => void
 };
 
 /**
@@ -183,19 +183,19 @@ export default class AlarmTimer {
 			{
 				caption: ">",
 				rotationDeg: 0,
-				handler: () => {}
+				clickHandler: this.startSound
 			}, {
 				caption: "=",
 				rotationDeg: 90,
-				handler: () => {}
+				clickHandler: this.stopSound
 			}, {
 				caption:  "^",
 				rotationDeg: 0,
-				handler: () => {}
+				clickHandler: () => {}
 			}, {
 				caption: "^",
 				rotationDeg: 180,
-				handler: () => {}
+				clickHandler: () => {}
 			}];
 		for (var i = 0; i < buttonConfigs.length; i++) {
 			this.createButton(
@@ -210,8 +210,9 @@ export default class AlarmTimer {
 	private createButton = (
 		config: buttonConfig,
 		position: number,
-		actorProperties: Partial<MRE.ActorLike>) => {
-		let button = MRE.Actor.Create(this.context, {
+		actorProperties: Partial<MRE.ActorLike>
+	): MRE.Actor => {
+		const button = MRE.Actor.Create(this.context, {
 			actor: Object.assign({
 				name: `button${position}`,
 				parentId: this.rootActor!.id,
@@ -226,6 +227,7 @@ export default class AlarmTimer {
 				}
 			}, actorProperties),
 		});
+		button.setCollider(MRE.ColliderType.Box, true);
 
 		MRE.Actor.Create(this.context, {
 			actor: {
@@ -247,6 +249,15 @@ export default class AlarmTimer {
 				}
 			}
 		});
+
+		const buttonBehavior = button.setBehavior(MRE.ButtonBehavior);
+		buttonBehavior.onClick(() => {
+			console.log(`Button ${position} clicked`);
+			config.clickHandler();
+		});
+	
+		console.log(`Button ${position} configured`);
+		return button;
 	}
 
 	private get timerContent(): Array<MRE.Actor> {
