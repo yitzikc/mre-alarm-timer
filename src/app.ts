@@ -213,7 +213,7 @@ export default class AlarmTimer {
 		actorProperties: Partial<MRE.ActorLike>) => {
 		let button = MRE.Actor.Create(this.context, {
 			actor: Object.assign({
-				name: `button${position + 1}`,
+				name: `button${position}`,
 				parentId: this.rootActor!.id,
 				appearance: { meshId: this.buttonSquare.id },
 				transform: {
@@ -229,7 +229,7 @@ export default class AlarmTimer {
 
 		MRE.Actor.Create(this.context, {
 			actor: {
-				name: `button${position + 1}Content`,
+				name: `button${position}Caption`,
 				parentId: button.id,
 				text: {
 					contents: config.caption,
