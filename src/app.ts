@@ -2,7 +2,7 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { clamp } from 'lodash';
 
 import { Countdown } from './countdown'
-import { getParameterLastValue, getBooleanOption } from './parameter_set_util'
+import { getParameterLastValue, getBooleanOption } from './parameter-set-util'
 
 interface buttonConfig {
 	caption: string,
