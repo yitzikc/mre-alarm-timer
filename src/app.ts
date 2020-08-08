@@ -282,7 +282,6 @@ export default class AlarmTimer {
 						this.alarmSound.id,
 						Object.assign({time: 0}, this.audioOptions));
 			} else if (this.pauseOnly && this.isPaused) {
-				this.soundPlaying.setState({paused: false});
 				this.soundPlaying.resume();
 				this.isPaused = false;
 			}
@@ -293,9 +292,8 @@ export default class AlarmTimer {
 
 	private stopSound = () => {
 		if (this.soundPlaying != undefined) {
-			this.soundPlaying.setState({paused: true});
+			this.soundPlaying.pause();
 			if (this.pauseOnly) {
-				this.soundPlaying.pause();
 				this.isPaused = true;
 				return;
 			}
