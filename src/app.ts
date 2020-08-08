@@ -274,26 +274,31 @@ export default class AlarmTimer {
 		if (!this.pauseOnly) {
 			this.stopSound();
 		}
+
 		if (this.alarmSound != undefined) {
-			this.soundPlaying =
-				this.rootActor!.startSound(this.alarmSound.id, this.audioOptions);
-		} else if (this.pauseOnly) {
-			this.soundPlaying?.setState({paused: false});
-			this.soundPlaying?.resume();
-			this.isPaused = false;
+			if (this.soundPlaying == undefined) {
+				this.soundPlaying =
+					this.rootActor!.startSound(
+						this.alarmSound.id,
+						Object.assign({time: 0}, this.audioOptions));
+			} else if (this.pauseOnly && this.isPaused) {
+				this.soundPlaying.setState({paused: false});
+				this.soundPlaying.resume();
+				this.isPaused = false;
+			}
 		}
+
 		return
 	}
 
 	private stopSound = () => {
 		if (this.soundPlaying != undefined) {
+			this.soundPlaying.setState({paused: true});
 			if (this.pauseOnly) {
-				this.soundPlaying.setState({paused: true});
 				this.soundPlaying.pause();
 				this.isPaused = true;
 				return;
 			}
-			this.soundPlaying.setState({paused: true, time: 0});
 			this.soundPlaying.stop();
 			this.soundPlaying = undefined;
 		}
