@@ -251,12 +251,7 @@ export default class AlarmTimer {
 		});
 
 		const buttonBehavior = button.setBehavior(MRE.ButtonBehavior);
-		buttonBehavior.onClick(() => {
-			console.log(`Button ${position} clicked`);
-			config.clickHandler();
-		});
-	
-		console.log(`Button ${position} configured`);
+		buttonBehavior.onClick(config.clickHandler);
 		return button;
 	}
 
