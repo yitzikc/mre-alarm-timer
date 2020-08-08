@@ -3,10 +3,13 @@ import { MediaInstance, SetMediaStateOptions } from '@microsoft/mixed-reality-ex
 // A class acting as a delegate to the SDK's MediaInstance class,
 // and tracks the options specified to it, simplifying some of the logic.
 export class PlayingMedia {
-    private lastSetOptions: Partial<SetMediaStateOptions>;
+    private lastSetOptions: SetMediaStateOptions;
 
-    constructor(private mediaInstance?: MediaInstance) {
-        this.lastSetOptions = {};
+    constructor(
+        private mediaInstance?: MediaInstance,
+        initialOptions?: SetMediaStateOptions
+    ) {
+        this.lastSetOptions = initialOptions || {};
     }
 
     // Delegate the methods of MediaInstance to the MediaInstance object

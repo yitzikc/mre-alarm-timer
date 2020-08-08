@@ -281,10 +281,10 @@ export default class AlarmTimer {
 
 		assert (!this.soundPlaying.isLoaded);
 		if (this.alarmSound != undefined) {
+			const playOptions = Object.assign({time: 0}, this.audioOptions)
 			this.soundPlaying = new PlayingMedia(
-				this.rootActor!.startSound(
-					this.alarmSound.id,
-					Object.assign({time: 0}, this.audioOptions)));
+				this.rootActor!.startSound(this.alarmSound.id, playOptions),
+				playOptions);
 		}
 
 		return
