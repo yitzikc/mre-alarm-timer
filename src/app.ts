@@ -18,11 +18,12 @@ export default class AlarmTimer {
 	private countdownTimer?: Countdown = undefined;
 	private assets: MRE.AssetContainer;
 
-	// Specific assets
+	// Specific assets and their properties
 	private readonly buttonSquare: MRE.Mesh;
 	private readonly buttonDefaultLocalTransform: MRE.Vector3Like = {
 		x: 0, y: 0, z: -0.2
 	};
+	private readonly commonTextProperties: Partial<MRE.TextLike>;
 
 	// Relative path of the audio file to play as alarm in the public directory
 	private readonly alarmSoundPath: string;
@@ -55,6 +56,12 @@ export default class AlarmTimer {
 
 		// Initialize assets
 		this.buttonSquare = this.assets.createBoxMesh('buttonSquare', 0.25, 0.25, 0.2);
+		this.commonTextProperties = {
+			justify: MRE.TextJustify.Center,
+			font: MRE.TextFontFamily.SansSerif,
+			anchor: MRE.TextAnchorLocation.MiddleCenter,
+			color: MRE.Color3.FromInts(30, 30, 30)
+		};
 	}
 
 	private getAudioOptions = (params: MRE.ParameterSet): MRE.SetAudioStateOptions =>  {
@@ -147,12 +154,10 @@ export default class AlarmTimer {
 			actor: {
 				name: 'timerContent',
 				parentId: timerBody.id,
-				text: {
+				text: Object.assign({}, this.commonTextProperties, {
 					contents: '',
-					anchor: MRE.TextAnchorLocation.MiddleCenter,
-					color: { r: 30 / 255, g: 30 / 255, b: 30 / 255 },
 					height: 0.3
-				},
+				}),
 				transform: {
 					local: {
 						position: { x: 0, y: 0, z: -timerBody.transform.app.position.z }
@@ -233,14 +238,10 @@ export default class AlarmTimer {
 			actor: {
 				name: `button${position}Caption`,
 				parentId: button.id,
-				text: {
+				text: Object.assign({}, this.commonTextProperties, {
 					contents: config.caption,
-					justify: MRE.TextJustify.Center,
-					font: MRE.TextFontFamily.SansSerif,
-					anchor: MRE.TextAnchorLocation.MiddleCenter,
-					color: { r: 30 / 255, g: 30 / 255, b: 30 / 255 },
 					height: 0.2
-				},
+				}),
 				transform: {
 					local: {
 						position: Object.assign({}, this.buttonDefaultLocalTransform, { x: 0, y: 0 }),
