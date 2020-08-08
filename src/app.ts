@@ -197,7 +197,7 @@ export default class AlarmTimer {
 				rotationDeg: 180,
 				clickHandler: () => {}
 			}];
-		for (var i = 0; i < buttonConfigs.length; i++) {
+		for (let i = 0; i < buttonConfigs.length; i++) {
 			this.createButton(
 				buttonConfigs[i],
 				i,
