@@ -40,6 +40,7 @@ export default class AlarmTimer {
 	private readonly increment: number;
 
 	private readonly maxVolume = 100.0;
+	private readonly volumeIncrementPercent: number = 10.0;
 
 	private readonly viewableByModsOnly: boolean;
 	private readonly pauseOnly: boolean;
@@ -198,12 +199,17 @@ export default class AlarmTimer {
 			}, {
 				caption:  "^",
 				rotationDeg: 0,
-				clickHandler: () => {}
+				clickHandler: () => {
+					this.soundPlaying.changeVolume(this.volumeIncrementPercent);
+				}
 			}, {
 				caption: "^",
 				rotationDeg: 180,
-				clickHandler: () => {}
-			}];
+				clickHandler: () => {
+					this.soundPlaying.changeVolume(-this.volumeIncrementPercent);
+				}
+			}
+		];
 		for (let i = 0; i < buttonConfigs.length; i++) {
 			this.createButton(
 				buttonConfigs[i],
