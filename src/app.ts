@@ -1,7 +1,9 @@
+import assert = require("assert");
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { clamp } from 'lodash';
 
 import { Countdown } from './countdown'
+import { PlayingMedia } from './playing-media'
 import { getParameterLastValue, getBooleanOption } from './parameter-set-util'
 
 interface buttonConfig {
@@ -28,7 +30,7 @@ export default class AlarmTimer {
 	// Relative path of the audio file to play as alarm in the public directory
 	private readonly alarmSoundPath: string;
 	private alarmSound?: MRE.Sound = undefined;
-	private soundPlaying?: MRE.MediaInstance = undefined;
+	private soundPlaying: PlayingMedia;
 	private readonly audioOptions: MRE.SetAudioStateOptions;
 
 	// Number of seconds to count initially
@@ -41,7 +43,6 @@ export default class AlarmTimer {
 
 	private readonly viewableByModsOnly: boolean;
 	private readonly pauseOnly: boolean;
-	private isPaused: boolean = false;
 
 	constructor(private context: MRE.Context, private params: MRE.ParameterSet, private baseUrl: string) {
 		this.initialCount = parseInt(getParameterLastValue(params, 'c', '60'));
@@ -50,6 +51,7 @@ export default class AlarmTimer {
 		this.alarmSoundPath = getParameterLastValue(params, 'as', 'alarm.ogg');
 		this.pauseOnly = getBooleanOption(params, 'p', false);
 		this.audioOptions = this.getAudioOptions(params);
+		this.soundPlaying = new PlayingMedia();
 		this.assets = new MRE.AssetContainer(this.context);
 		this.context.onStarted(() => this.started());
 		this.context.onUserJoined(user => this.onUserJoined(user));
@@ -168,7 +170,7 @@ export default class AlarmTimer {
 
 		const buttonBehavior = timerBody.setBehavior(MRE.ButtonBehavior);
 		buttonBehavior.onClick(() => {
-			const soundIsPlaying = (this.soundPlaying != undefined) && !this.isPaused;
+			const soundIsPlaying = this.soundPlaying.isLoaded && !this.soundPlaying.isPaused;
 
 			if (soundIsPlaying || ! this.countdownTimer?.isPaused) {
 				this.countdownTimer?.pause();
@@ -267,34 +269,33 @@ export default class AlarmTimer {
 	}
 
 	private startSound = () => {
-		if (!this.pauseOnly) {
-			this.stopSound();
+		if (this.soundPlaying.isLoaded) {
+			if (this.pauseOnly) {
+				this.soundPlaying.resume();
+				return;
+			}
+			else {
+				this.soundPlaying.stop();
+			}
 		}
 
+		assert (!this.soundPlaying.isLoaded);
 		if (this.alarmSound != undefined) {
-			if (this.soundPlaying == undefined) {
-				this.soundPlaying =
-					this.rootActor!.startSound(
-						this.alarmSound.id,
-						Object.assign({time: 0}, this.audioOptions));
-			} else if (this.pauseOnly && this.isPaused) {
-				this.soundPlaying.resume();
-				this.isPaused = false;
-			}
+			this.soundPlaying = new PlayingMedia(
+				this.rootActor!.startSound(
+					this.alarmSound.id,
+					Object.assign({time: 0}, this.audioOptions)));
 		}
 
 		return
 	}
 
 	private stopSound = () => {
-		if (this.soundPlaying != undefined) {
+		if (this.pauseOnly) {
 			this.soundPlaying.pause();
-			if (this.pauseOnly) {
-				this.isPaused = true;
-				return;
-			}
+		}
+		else {	
 			this.soundPlaying.stop();
-			this.soundPlaying = undefined;
 		}
 		return
 	}
